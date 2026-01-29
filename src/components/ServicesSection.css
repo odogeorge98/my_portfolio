@@ -1,0 +1,222 @@
+/* ServicesSection.css (updated mobile layout to 2 columns) */
+
+:root {
+  --bg: #0c0c0c;
+  --card: #141414;
+  --card-2: rgba(255,255,255,0.02);
+  --accent: #f2c500; /* yellow accent */
+  --muted: #9a9a9a;
+  --text: #fff;
+}
+
+.services {
+  margin-top: 64px;
+  padding: 48px 24px;
+  background: var(--bg);
+  border-top: 1px solid rgba(255,255,255,0.02);
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+
+.section-title {
+  font-size: 28px;
+  margin: 0 0 8px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.section-sub {
+  color: var(--muted);
+  margin: 0 0 22px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Grid */
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 8px;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Card */
+.service-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));
+  border: 1px solid rgba(255,255,255,0.03);
+  padding: 28px 22px;
+  border-radius: 18px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.28s cubic-bezier(.2,.9,.2,1), box-shadow 0.28s;
+  animation: fadeInUp 0.55s ease both;
+  text-align: center;
+}
+
+/* subtle sliding shine */
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 110%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(242,197,0,0.045), transparent);
+  transition: left 0.7s ease;
+  pointer-events: none;
+}
+.service-card:hover::before {
+  left: 110%;
+}
+
+/* hover */
+.service-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 48px rgba(0,0,0,0.6);
+  border-color: rgba(242,197,0,0.08);
+}
+
+/* Icon circle */
+.service-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.01);
+  border: 2px solid rgba(242,197,0,0.08);
+  box-shadow: inset 0 -6px 12px rgba(0,0,0,0.25);
+  transition: transform 0.28s ease, border-color 0.3s ease;
+}
+
+/* image inside icon */
+.service-icon-img {
+  max-width: 42px;
+  max-height: 42px;
+  display: block;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* scale icon on hover */
+.service-card:hover .service-icon {
+  transform: scale(1.06) rotate(2deg);
+  border-color: rgba(242,197,0,0.18);
+}
+
+/* Title & text */
+.service-title {
+  margin: 0;
+  font-size: 16px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.service-desc {
+  margin: 0;
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 260px;
+}
+
+/* animated underline / accent */
+.service-hover-effect {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.32s ease;
+}
+.service-card:hover .service-hover-effect {
+  transform: scaleX(1);
+}
+
+/* Fade in */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+
+/* medium screens: 2 columns */
+@media (max-width: 980px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .service-desc {
+    max-width: 320px;
+  }
+}
+
+/* mobile: 2 columns (2x2 appearance when viewport height allows) */
+@media (max-width: 580px) {
+  .service-grid {
+    grid-template-columns: repeat(2, 1fr); /* <-- changed: was 1fr previously */
+    gap: 16px;
+    max-width: 720px;
+    padding: 0 8px;
+  }
+  .service-card {
+    min-height: 160px;
+    padding: 20px;
+  }
+  .service-icon {
+    width: 64px;
+    height: 64px;
+  }
+  .service-icon-img {
+    max-width: 38px;
+    max-height: 38px;
+  }
+  .section-title { font-size: 22px; }
+}
+
+/* very small screens fallback: stack to single column if space is too narrow */
+@media (max-width: 360px) {
+  .service-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 10px;
+  }
+  .service-card {
+    padding: 16px;
+  }
+  .service-icon {
+    width: 56px;
+    height: 56px;
+  }
+  .service-icon-img {
+    max-width: 32px;
+    max-height: 32px;
+  }
+}

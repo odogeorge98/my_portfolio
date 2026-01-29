@@ -1,0 +1,269 @@
+:root{
+  --bg: #0c0c0c;
+  --muted: #9a9a9a;
+  --accent: #f2c500; /* gold */
+  --text: #fff;
+  --ring-thickness: 8px;
+  --ring-empty-default: #D9D9D933; /* ← requested empty arc color */
+  --edge-softness: 2deg; /* how soft the transition at the ends will be */
+}
+
+/* Bigger/taller about section for the oval photo */
+.section.about{
+  padding: 80px 18px;
+  background: var(--bg);
+  color: var(--text);
+  border-top: 1px solid rgba(255,255,255,0.02);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* layout */
+.about-inner{
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 56px;
+  align-items: center;
+  justify-content: center;
+}
+
+/* oval photo wrap */
+.about-photo-wrap{
+  position: relative;
+  width: 360px;
+  height: 440px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.about-ring{
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 10px solid var(--accent);
+  box-shadow: 0 0 0 8px rgba(242,197,0,0.05);
+  transform: rotate(-1deg);
+  pointer-events: none;
+}
+.about-photo{
+  width: 320px;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+}
+
+/* Content */
+.about-content{
+  flex: 1;
+  max-width: 620px;
+}
+.section-title{
+  margin: 0 0 12px;
+  font-size: 26px;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.about-copy{
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 22px;
+}
+
+/* button */
+.btn.primary{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--accent);
+  color: #111;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+.btn.primary:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px rgba(0,0,0,0.55);
+}
+
+/* skills container */
+.skills{
+  max-width: 1200px;
+  margin: 48px auto 0;
+  padding: 0 10px;
+}
+
+/* desktop: 5 across */
+.skills-row{
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0,1fr));
+  gap: 36px;
+  align-items: start;
+  justify-items: center;
+}
+
+/* skill block */
+.skill{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+/* badge containing ring and icon */
+.skill-badge{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  overflow: visible;
+  transition: transform 280ms cubic-bezier(.2,.9,.2,1);
+}
+
+/* Skill ring - slightly outside the badge for crispness */
+.skill-ring{
+  position: absolute;
+  inset: -6px; /* slightly outside the badge */
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms ease, transform 420ms ease;
+  transform: rotate(-90deg);
+  will-change: transform, opacity;
+  /* subtle smoothing for sharper edges */
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0)); /* placeholder for hardware accel */
+}
+
+/* --- Full ring (100%) --- */
+.full-ring {
+  opacity: 1;
+  background: conic-gradient(var(--accent) 0deg 360deg);
+  -webkit-mask: radial-gradient(circle at center, transparent 56%, black 57%);
+  mask: radial-gradient(circle at center, transparent 56%, black 57%);
+  transform: rotate(-90deg);
+}
+
+/* --- Partial ring (<100%) --- */
+/* This uses a conic-gradient with tiny soft transitions around the fill edge
+   so the border looks rounded/curvy. The remaining arc uses the user color
+   (--empty-color) which defaults to the requested #D9D9D933. */
+.partial-ring {
+  opacity: 1;
+
+  /* build smooth-edged arc:
+     - first: filled portion slightly reduced by --edge-softness to avoid a hard corner
+     - then a very small transparent strip (creates a soft transition)
+     - then the remaining arc with the empty color
+  */
+  background:
+    conic-gradient(
+      var(--accent) 0deg calc(var(--fill-degree) - var(--edge-softness)),
+      rgba(255,255,255,0) calc(var(--fill-degree) - var(--edge-softness)) calc(var(--fill-degree) + var(--edge-softness)),
+      var(--empty-color, var(--ring-empty-default)) calc(var(--fill-degree) + var(--edge-softness)) 360deg
+    );
+
+  /* donut mask for a clean hole in the center */
+  -webkit-mask: radial-gradient(circle at center, transparent 56%, black 57%);
+  mask: radial-gradient(circle at center, transparent 56%, black 57%);
+
+  transform: rotate(var(--rotation, -90deg));
+  /* slight blur to smooth edges (very subtle) */
+  filter: blur(0.3px) drop-shadow(0 0 0 rgba(0,0,0,0));
+}
+
+/* animation trigger when skills are visible */
+.skills-visible .skill-ring {
+  animation: ring-appear 0.48s ease-out forwards;
+}
+
+/* small keyframe to pop in */
+@keyframes ring-appear {
+  from { opacity: 0; transform: rotate(var(--rotation, -90deg)) scale(0.86); }
+  to   { opacity: 1; transform: rotate(var(--rotation, -90deg)) scale(1); }
+}
+
+/* Skill icon wrapper - no background color and no border on icon */
+.skill-icon-wrapper{
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+
+/* centered icon - keep original colors; NO border */
+.skill-icon{
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  filter: none; /* keep real icon colors by default */
+  transition: filter 0.3s ease, transform 0.2s ease;
+}
+
+/* percent and label */
+.skill-pct{
+  margin-top: 6px;
+  font-weight: 800;
+  color: var(--accent);
+  font-size: 15px;
+}
+.skill-label{
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* hover effects */
+.skill:hover .skill-badge{
+  transform: translateY(-6px) scale(1.02);
+}
+.skill:hover .skill-icon { transform: scale(1.06); }
+
+/* responsive adjustments */
+@media (max-width:1200px){
+  .skills-row{ grid-template-columns: repeat(3, minmax(0,1fr)); gap: 28px; }
+  .about-inner{ gap: 32px; }
+}
+@media (max-width:980px){
+  .about-inner{ flex-direction: column; align-items: center; gap: 22px; text-align: center; }
+  .section-title{ text-align: center; }
+  .skills-row{ grid-template-columns: repeat(3, minmax(0,1fr)); gap: 18px; }
+}
+@media (max-width:580px){
+  .about-photo-wrap{ width: 300px; height: 360px; }
+  .about-ring{ border-width: 8px; }
+  .about-photo{ width: 260px; height: 320px; }
+
+  .skills-row{
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 18px;
+    padding: 0 6px;
+  }
+
+  .skill-badge{ width: 80px; height: 80px; }
+  .skill-ring{ inset: -3px; }
+  .skill-icon-wrapper{ width: 44px; height: 44px; }
+  .skill-icon{ width: 28px; height: 28px; }
+  .skill-pct{ font-size: 14px; }
+  .skill-label{ font-size: 13px; }
+  .section-title{ font-size: 22px; }
+}
+@media (max-width:360px){
+  .skills-row{ grid-template-columns: 1fr; gap: 12px; }
+  .about-photo-wrap{ width: 240px; height: 280px; }
+  .about-photo{ width: 200px; height: 240px; }
+}
